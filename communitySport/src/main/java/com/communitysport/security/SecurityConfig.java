@@ -16,6 +16,17 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+// Spring Security 配置入口。
+//
+// 本项目后端是典型的“前后端分离 + JWT 鉴权”的 REST API：
+// - 前端在每次请求时携带 Authorization: Bearer <accessToken>
+// - 后端不使用 Session（无状态），而是通过过滤器从 JWT 解析用户身份并写入 SecurityContext
+//
+// 这个类主要回答三个问题：
+// 1) 认证（Authentication）：怎么判断“你是谁”（JwtAuthenticationFilter + JwtService）
+// 2) 授权（Authorization）：你能访问哪些接口（permitAll / authenticated / 角色控制）
+// 3) 异常返回：未登录/无权限时给前端返回什么（401/403 JSON 处理器）
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -28,6 +39,8 @@ public class SecurityConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
+        // 这里返回 InMemoryUserDetailsManager，通常用于承接 Spring Security 的默认依赖。
+        // 本项目真正的“登录态”来源是 JWT，因此未必依赖它进行账号校验。
         return new InMemoryUserDetailsManager();
     }
 

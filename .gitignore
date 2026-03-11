@@ -69,6 +69,7 @@ temp/
 # 上传文件（视频等大文件不提交）
 # =====================
 **/static/upload/
+communitySport/src/main/resources/static/upload/
 
 # =====================
 # 其他

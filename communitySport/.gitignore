@@ -4,6 +4,9 @@ target/
 !**/src/main/**
 !**/src/test/**
 
+# 上传目录不提交（含大视频等）
+src/main/resources/static/upload/
+
 ### STS ###
 .apt_generated
 .classpath
