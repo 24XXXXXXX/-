@@ -66,10 +66,15 @@ temp/
 # .env
 
 # =====================
-# 上传文件（视频等大文件不提交）
+# 上传文件（不提交媒体大文件，仅保留目录结构 .gitkeep）
 # =====================
-**/static/upload/
-communitySport/src/main/resources/static/upload/
+**/static/upload/**/*.jpg
+**/static/upload/**/*.jpeg
+**/static/upload/**/*.png
+**/static/upload/**/*.gif
+**/static/upload/**/*.webp
+**/static/upload/**/*.mp4
+**/static/upload/**/*.mp3
 
 # =====================
 # 其他

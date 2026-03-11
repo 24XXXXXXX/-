@@ -4,8 +4,16 @@ target/
 !**/src/main/**
 !**/src/test/**
 
-# 上传目录不提交（含大视频等）
-src/main/resources/static/upload/
+# 上传目录：不提交图片/视频等媒体文件，只保留目录结构（.gitkeep 会提交）
+src/main/resources/static/upload/**/*.jpg
+src/main/resources/static/upload/**/*.jpeg
+src/main/resources/static/upload/**/*.png
+src/main/resources/static/upload/**/*.gif
+src/main/resources/static/upload/**/*.webp
+src/main/resources/static/upload/**/*.mp4
+src/main/resources/static/upload/**/*.mp3
+# 临时/无扩展名文件
+src/main/resources/static/upload/temp/test
 
 ### STS ###
 .apt_generated
