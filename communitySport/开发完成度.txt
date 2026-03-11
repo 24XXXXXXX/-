@@ -1,0 +1,383 @@
+1. 后端当前已实现的模块（以 Controller 为准；支付/物流按 系统需求.md 最终口径）
+ 
+ 1.1 账号体系 / 权限（已完成）
+ 认证接口
+ POST /api/auth/login
+ POST /api/auth/register
+ POST /api/auth/refresh
+ POST /api/auth/logout
+ 找回密码（邮箱验证码）
+ POST /api/auth/password-reset/code
+ POST /api/auth/password-reset/confirm
+ 当前用户信息
+ GET /api/me
+ 鉴权机制
+ Spring Security + JWT（Access/Refresh 双 Token）
+ 密码：BCrypt
+ 
+ 1.2 钱包 + 充值申请 + 签到（已完成）
+ 钱包
+ GET /api/wallet/balance
+ GET /api/wallet/transactions
+ 充值申请（管理员审核发放）
+ 用户：POST /api/wallet/topups，GET /api/wallet/topups
+ 管理员：GET /api/admin/wallet/topups，POST /api/admin/wallet/topups/{id}/approve|reject
+ 签到
+ POST /api/signin
+ GET /api/signin/status
+ 
+ 1.3 场地模块 + 时段 + 预约 + 核销（核心闭环已完成）
+ 场地浏览（公开 GET 放行）
+ GET /api/venue/types
+ GET /api/venues
+ GET /api/venues/{id}
+ 场地维护（员工/管理员）
+ POST /api/venues
+ PATCH /api/venues/{id}/status
+ POST /api/venues/{id}/photos
+ 时段
+ GET /api/venues/{venueId}/timeslots?date=...
+ POST /api/venues/{venueId}/timeslots/generate（员工/管理员）
+ PATCH /api/timeslots/{id}/status（员工/管理员）
+ 预约
+ 用户：POST /api/bookings（钱包扣款）、POST /api/bookings/{id}/cancel（退款）、GET /api/bookings、GET /api/bookings/{id}、GET /api/bookings/{id}/verify-logs
+ 员工/管理员：POST /api/bookings/verify（核销）、GET /api/admin/bookings、GET /api/admin/bookings/{id}、GET /api/admin/bookings/{id}/verify-logs
+ 
+ 1.4 器材商城（核心闭环 + 物流简化 + 评价 + 后台商品管理已完成）
+ 公开浏览
+ GET /api/equipment/categories
+ GET /api/equipments
+ GET /api/equipments/{id}
+ 购物车
+ GET /api/equipment/cart
+ POST /api/equipment/cart
+ 下单/订单
+ POST /api/equipment/orders
+ GET /api/equipment/orders
+ GET /api/equipment/orders/{id}
+ 物流（简化口径：发货/收货）
+ 用户：POST /api/equipment/orders/{id}/receive
+ 管理员：GET /api/admin/equipment/orders，GET /api/admin/equipment/orders/{id}，POST /api/admin/equipment/orders/{id}/ship
+ 员工：GET /api/staff/equipment/orders，GET /api/staff/equipment/orders/{id}，POST /api/staff/equipment/orders/{id}/ship
+ 评价
+ POST /api/equipment-reviews
+ GET /api/equipments/{equipmentId}/reviews
+ 后台商品管理
+ GET /api/admin/equipments
+ GET /api/admin/equipments/{id}
+ POST /api/admin/equipments
+ PUT /api/admin/equipments/{id}
+ POST /api/admin/equipments/{id}/status
+ DELETE /api/admin/equipments/{id}
+ 器材封面上传（员工/管理员）
+ POST /api/equipments/{id}/cover
+ 
+ 1.5 教练认证（已完成）
+ 用户：POST /api/coach/applications，GET /api/coach/applications/me
+ 管理员：GET /api/admin/coach/applications，POST /api/admin/coach/applications/{id}/approve|reject
+ 
+ 1.6 课程（公开 + 教练管理 + 排期 + 预约/支付/退款/核销 + 评价）（核心闭环已完成）
+ 课程公开浏览
+ GET /api/courses
+ GET /api/courses/{id}
+ 课程排期/场次
+ 用户公开：GET /api/courses/{courseId}/sessions
+ 教练端：POST /api/coach/courses/{courseId}/sessions，GET /api/coach/courses/{courseId}/sessions
+ 教练端：POST /api/coach/course-sessions/{id}/status
+ 教练课程管理
+ POST /api/coach/courses
+ PUT /api/coach/courses/{id}
+ POST /api/coach/courses/{id}/status
+ GET /api/coach/courses
+ GET /api/coach/courses/{id}
+ 课程预约/支付/退款/核销
+ 用户：POST /api/course-bookings，POST /api/course-bookings/{id}/pay，POST /api/course-bookings/{id}/cancel，GET /api/course-bookings，GET /api/course-bookings/{id}
+ 教练：GET /api/coach/course-bookings，POST /api/coach/course-bookings/{id}/accept|reject，POST /api/coach/course-bookings/verify
+ 员工/管理员：POST /api/course-bookings/verify
+ 课程评价
+ POST /api/course-reviews
+ GET /api/courses/{courseId}/reviews
+ 
+ 1.7 教练教学视频（已完成）
+ 教练端：POST /api/coach/videos/upload
+ 教练端：POST /api/coach/videos/{id}/cover
+ 教练端：POST /api/coach/videos
+ 教练端：PUT /api/coach/videos/{id}
+ 教练端：POST /api/coach/videos/{id}/status
+ 教练端：GET /api/coach/videos
+ 教练端：GET /api/coach/videos/{id}
+ 用户端：GET /api/videos
+ 用户端：GET /api/videos/{id}
+ 用户端：POST /api/videos/{id}/purchase
+ 用户端：GET /api/video-purchases
+ 静态资源：GET /video/**
+ 
+ 1.8 投诉（已完成）
+ 用户：POST /api/complaints，GET /api/complaints，GET /api/complaints/{id}，POST /api/complaints/{id}/messages
+ 管理员：GET /api/admin/complaints，GET /api/admin/complaints/{id}，POST /api/admin/complaints/{id}/assign
+ 员工：GET /api/staff/complaints，GET /api/staff/complaints/{id}，POST /api/staff/complaints/{id}/messages，POST /api/staff/complaints/{id}/status
+
+ 1.8.1 员工巡检/维护上报 + 日报统计（已完成）
+ 员工：POST /api/staff/inspections
+ 员工：GET /api/staff/inspections
+ 员工：GET /api/staff/inspections/{id}
+ 员工：POST /api/staff/inspections/{id}/status
+ 员工：GET /api/staff/daily-report?date=...
+ 
+ 1.9 公告 / 轮播图（已完成）
+ 公告（前台）
+ GET /api/notices
+ GET /api/notices/{id}
+ 公告（管理员）
+ GET /api/admin/notices
+ GET /api/admin/notices/{id}
+ POST /api/admin/notices
+ PUT /api/admin/notices/{id}
+ POST /api/admin/notices/{id}/published
+ POST /api/admin/notices/{id}/cover
+ DELETE /api/admin/notices/{id}
+ 轮播图（前台）
+ GET /api/home-banners
+ 首页推荐聚合（前台）
+ GET /api/home/recommendations
+ 轮播图（管理员）
+ GET /api/admin/home-banners
+ POST /api/admin/home-banners
+ PUT /api/admin/home-banners/{id}
+ POST /api/admin/home-banners/{id}/enabled
+ POST /api/admin/home-banners/{id}/image
+ DELETE /api/admin/home-banners/{id}
+ 
+ 1.10 收藏（已完成）
+ POST /api/favorites
+ DELETE /api/favorites
+ GET /api/favorites
+ GET /api/favorites/status
+ GET /api/favorites/count
+ 
+ 1.11 个人中心（已完成）
+ 用户资料
+ GET /api/me
+ PUT /api/me
+ 头像
+ POST /api/me/avatar
+ 改密
+ POST /api/me/password
+ 消息中心（站内信）
+ GET /api/me/messages
+ GET /api/me/messages/unread-count
+ POST /api/me/messages/{id}/read
+ POST /api/me/messages/read-all
+ 地址管理
+ GET /api/me/addresses
+ POST /api/me/addresses
+ PUT /api/me/addresses/{id}
+ DELETE /api/me/addresses/{id}
+ 
+ 1.12 管理员后台用户/员工账号管理（已完成）
+ GET /api/admin/users
+ GET /api/admin/users/{id}
+ POST /api/admin/users
+ PUT /api/admin/users/{id}
+ POST /api/admin/users/{id}/status
+ POST /api/admin/users/{id}/roles
+ POST /api/admin/users/{id}/password
+ POST /api/admin/users/{id}/staff-profile
+ 
+ 1.12.1 管理员系统参数配置 + 数据监控（已完成）
+ 系统参数配置
+ GET /api/admin/sys-configs
+ POST /api/admin/sys-configs
+ 数据监控（核心指标汇总）
+ GET /api/admin/metrics?startDate=...&endDate=...
+ 
+ 1.13 通用能力（已完成）
+ 健康检查：GET /api/health
+ 上传：POST /api/upload/photo/{category}
+ 
+ 2. 前端开发完成度（按 系统需求.md 全量验收口径）- 已全部完成
+ 前端项目文件：webFront
+ 基础技术栈：vue3+js+axios+pinia(以及pinia持久化插件)+naiveUI（采用按需自动引入的方式使用 unplugin-auto-import 插件来自动导入 API，使用 unplugin-vue-components 插件来按需自动加载组件）
+ 前台后台用同一个服务端口，用路由做区分
+ 
+ 2.1 用户端（前台）- 已完成
+ 已实现：
+ - 登录/注册/找回密码（views/auth/Login.vue, Register.vue, ForgotPassword.vue）
+ - 首页推荐（views/home/Index.vue）- 轮播图、热门场地、优质课程、器材优惠、公告
+ - 场地模块（views/venue/List.vue, Detail.vue）- 列表/详情/时段/预约
+ - 场地预约记录（views/user/VenueBookings.vue）- 取消/核销码
+ - 器材商城（views/equipment/List.vue, Detail.vue, Cart.vue, Checkout.vue）
+ - 器材订单（views/user/EquipmentOrders.vue, EquipmentOrderDetail.vue）- 收货/评价
+ - 课程模块（views/course/List.vue, Detail.vue）- 列表/详情/场次/预约
+ - 课程预约（views/user/CourseBookings.vue）- 支付/取消/评价
+ - 视频模块（views/video/List.vue, Detail.vue）- 列表/详情/购买
+ - 已购视频（views/user/VideoPurchases.vue）- 播放
+ - 投诉模块（views/user/ComplaintCreate.vue, Complaints.vue, ComplaintDetail.vue）
+ - 个人中心（views/user/Profile.vue）- 资料/头像/改密
+ - 钱包（views/user/Wallet.vue）- 余额/流水/充值申请/签到
+ - 地址管理（views/user/Addresses.vue）
+ - 收藏（views/user/Favorites.vue）- 按类型展示
+ - 消息中心（views/user/Messages.vue）- 已读/未读
+ - 公告（views/notice/List.vue, Detail.vue）
+ 
+ 2.2 教练端 - 已完成
+ 已实现：
+ - 教练认证申请（views/coach/Apply.vue）
+ - 课程管理（views/coach/Courses.vue, CourseForm.vue）- 创建/编辑/场次管理
+ - 预约管理（views/coach/Bookings.vue）- 接单/拒单/核销
+ - 视频管理（views/coach/Videos.vue, VideoForm.vue）- 上传/编辑
+ - 咨询管理（views/coach/Consultations.vue）- 回复用户咨询
+ - 收入统计（views/coach/Earnings.vue）
+ - 提现申请（views/coach/Withdrawals.vue）
+ 
+ 2.3 员工端 - 已完成
+ 已实现：
+ - 投诉处理（views/staff/Complaints.vue, ComplaintDetail.vue）
+ - 核销功能（views/staff/Verify.vue）- 场地/课程预约核销
+ - 巡检上报（views/staff/Inspections.vue, InspectionForm.vue）
+ - 日报统计（views/staff/DailyReport.vue）
+ 
+ 2.4 管理员端 - 已完成
+ 已实现：
+ - 数据看板（views/admin/Dashboard.vue）- 核心指标/统计图表
+ - 用户管理（views/admin/Users.vue, UserForm.vue）- 搜索/筛选/创建/编辑/状态/角色
+ - 教练审核（views/admin/CoachApplications.vue）- 通过/拒绝
+ - 场地管理（views/admin/Venues.vue, VenueForm.vue）- CRUD/时段生成
+ - 器材管理（views/admin/Equipment.vue, EquipmentForm.vue）- CRUD/库存
+ - 订单管理（views/admin/Orders.vue）- 发货
+ - 充值审核（views/admin/Topups.vue）- 通过/拒绝
+ - 提现审核（views/admin/Withdrawals.vue）- 通过/拒绝
+ - 投诉管理（views/admin/Complaints.vue）- 指派员工
+ - 公告管理（views/admin/Notices.vue, NoticeForm.vue）- CRUD/发布
+ - 轮播图管理（views/admin/Banners.vue, BannerForm.vue）- CRUD/启用
+ - 系统配置（views/admin/Settings.vue）- 参数配置
+ 
+ 3. 全量验收状态（后端/前端汇总）- 已全部完成
+ 3.1 用户注册登录：后端已实现，前端已实现
+ 3.2 首页推荐：后端已实现，前端已实现
+ 3.3 场地预约：后端已实现，前端已实现
+ 3.4 器材购买：后端已实现，前端已实现
+ 3.5 课程预约：后端已实现，前端已实现
+ 3.6 投诉：后端已实现，前端已实现
+ 3.7 个人中心：后端已实现，前端已实现
+ 3.8 教练端：后端已实现，前端已实现
+ 3.9 员工端：后端已实现，前端已实现
+ 3.10 管理员端：后端已实现，前端已实现
+ 
+ 4. 项目完成状态
+ 后端：100% 完成
+ 前端：100% 完成
+ 
+ 所有功能模块已开发完成，可进行集成测试和验收。
+
+ 5. UI优化记录（2024-12-31）
+ 5.1 登录/注册/找回密码页面优化
+ - 缩短表单高度，移除标签改用placeholder
+ - 减小图标和标题尺寸
+ - 压缩内边距和间距
+ - 避免页面出现滚动条
+ 
+ 5.2 前台布局优化（UserLayout）
+ - 头部导航改为fixed定位，滚动时保持固定
+ - 添加毛玻璃效果背景
+ - 内容区添加渐变背景
+ 
+ 5.3 管理后台布局优化（AdminLayout/CoachLayout/StaffLayout）
+ - 侧边栏改为fixed定位
+ - 头部改为fixed定位，跟随侧边栏折叠
+ - 内容区添加margin适配固定布局
+ - 添加渐变背景替代纯白
+ - 支持侧边栏折叠时的平滑过渡
+ 
+ 5.4 全局样式优化
+ - 更新全局背景为渐变色
+ - 添加滚动条美化样式
+ - 统一字体和颜色配置
+ 
+ 5.5 列表页面布局统一（2024-12-31）
+ - 体育器材列表页面样式统一为与运动场地一致
+ - 教练课程列表页面样式统一为与运动场地一致
+ - 教学视频列表页面样式统一为与运动场地一致
+ - 统一页面标题、筛选区、卡片网格布局风格
+ 
+ 5.6 UI细节修复（2024-12-31）
+ - 首页轮播图移入content-wrapper内，宽度与下方内容区域一致（max-width: 1200px居中）
+ - 首页轮播图图片改为object-fit: cover填充显示
+ - 个人中心页面添加margin: 0 auto居中显示
+ - 我的钱包页面添加margin: 0 auto居中显示
+ - 消息中心页面添加margin: 0 auto居中显示
+ - 提交投诉页面添加margin: 0 auto居中显示
+ - 我的场地预约页面布局改为与已购视频页面一致（padding: 20px + n-card）
+ - 教练中心/员工中心/管理员中心header-content添加min-width:0，header-right添加flex-shrink:0防止被挤出屏幕
+ 
+ 5.7 详情页返回按钮（2026-01-02）
+ - 运动场地详情页添加返回按钮（views/venue/Detail.vue）
+ - 体育器材详情页添加返回按钮（views/equipment/Detail.vue）
+ - 教练课程详情页添加返回按钮（views/course/Detail.vue）
+ - 教学视频详情页添加返回按钮（views/video/Detail.vue）
+ 
+ 5.8 列表页搜索重置按钮（2026-01-02）
+ - 运动场地列表页添加重置按钮（views/venue/List.vue）
+ - 体育器材列表页添加重置按钮（views/equipment/List.vue）
+ - 教练课程列表页添加重置按钮（views/course/List.vue）
+ - 教学视频列表页添加重置按钮（views/video/List.vue）
+ 
+ 5.9 课程场次显示逻辑优化（2026-01-03）
+ - 已过期场次（当前时间在结束时间之后）不渲染
+ - 未过期场次按状态显示：
+   - 可预约：在预约时间段之前或之间，且有名额，自己未预约
+   - 不可预约：在预约时间段之后（已开始）或者人数已满且自己未预约
+   - 已预约：自己已经预约了这个场次
+ 
+ 5.10 注册页面错误提示优化（2026-01-02）
+ - 修复注册时后端返回的错误信息无法正确显示的问题
+ - 支持显示"用户名已经被注册"、"手机号已经被注册"、"邮箱已经被注册"等具体错误信息
+ 
+ 5.11 核销页面错误提示修复（2026-01-03）
+ - 修复员工核销页面后端返回的错误信息无法正确显示的问题
+ - 修复教练中心预约管理核销页面后端返回的错误信息无法正确显示的问题
+ - 支持显示"未到上课时间，无法核销"等具体错误信息
+ - 同时处理HTTP错误状态码和HTTP 200但body中有业务错误码的情况
+ - 添加英文错误消息翻译映射，将后端返回的英文错误信息翻译为中文显示
+   - invalid verification code → 核销码无效
+   - booking not found → 预约不存在
+   - class not started → 未到上课时间，无法核销
+ 
+ 5.12 移除教练端核销页面（2026-01-03）
+ - 移除教练端独立核销页面（/coach/verify），因为预约管理页面已经可以核销
+ - 移除路由配置和侧边栏菜单入口
+ - 删除views/coach/Verify.vue文件
+ 
+ 5.13 支付相关错误提示修复（2026-01-03）
+ - 修复器材结算页面订单提交失败时无法显示后端返回的具体错误信息
+ - 修复场地预约支付失败时无法显示后端返回的具体错误信息
+ - 修复视频购买支付失败时无法显示后端返回的具体错误信息
+ - 修复课程预约支付失败时无法显示后端返回的具体错误信息
+ - 修复课程预约列表页支付失败时无法显示后端返回的具体错误信息
+ - 支持显示"余额不够，请先充值"等具体错误信息
+ - 同时处理HTTP错误状态码和HTTP 200但body中有业务错误码的情况
+ 
+ 5.14 员工端状态显示中文化（2026-01-03）
+ - 修复员工投诉详情页面状态显示英文（RESOLVED）改为中文（已解决）
+ - 修复员工投诉详情页面投诉类型字段名（complaintType）和中文显示
+ - 修复员工投诉详情页面投诉人信息显示（移除不存在的电话字段）
+ - 修复员工投诉详情页面状态下拉框默认值使用大写匹配后端
+ - 修复员工投诉详情页面消息记录发送者名称字段（senderUsername）
+ - 修复员工投诉详情页面消息记录员工/用户样式判断（senderRole）
+ - 修复员工巡检记录页面状态显示英文（RESOLVED）改为中文（已处理）
+ - 支持大小写状态值的中文映射
+ 
+ 5.15 用户端投诉详情页面居中（2026-01-03）
+ - 用户投诉详情页面添加margin: 0 auto居中显示
+ 
+ 5.16 教练咨询详情消息用户名显示修复（2026-01-03）
+ - 修复咨询详情页面消息上方用户名没有渲染的问题
+ - 根据senderRole从咨询详情的username/coachUsername获取发送者名称
+ - 教练端咨询详情消息时间改为显示在消息下方
+ - 用户端咨询详情页面添加发送者名称显示
+ 
+ 5.17 管理员场地/器材表单修复（2026-01-03）
+ - 修复场地管理新增/编辑页面保存失败的问题
+ - 修复器材管理新增/编辑页面保存失败的问题
+ - 场地类型和器材分类下拉框支持筛选搜索已有选项
+ - 修复错误提示支持显示后端返回的msg字段

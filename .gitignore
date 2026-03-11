@@ -1,0 +1,77 @@
+# =====================
+# 操作系统与编辑器
+# =====================
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+desktop.ini
+
+# =====================
+# Java / Maven
+# =====================
+target/
+!.mvn/wrapper/maven-wrapper.jar
+*.jar
+*.war
+*.ear
+*.class
+*.log
+*.ctxt
+.mtj.tmp/
+hs_err_pid*
+replay_pid*
+*.iml
+.idea/
+*.ipr
+*.iws
+out/
+
+# =====================
+# Node.js / 前端
+# =====================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.npm
+.yarn-integrity
+dist/
+build/
+.cache/
+*.local
+.env
+.env.local
+.env.*.local
+
+# =====================
+# 日志与临时文件
+# =====================
+logs/
+*.log
+tmp/
+temp/
+*.tmp
+*.temp
+*.bak
+*.backup
+
+# =====================
+# 本地/敏感配置（按需取消注释）
+# =====================
+# application-local.yml
+# application-dev.yml
+# .env
+
+# =====================
+# 其他
+# =====================
+*.pid
+*.seed
+*.pid.lock
+.gradle/
+!gradle/wrapper/gradle-wrapper.jar
+.gradle
+.cursor/
